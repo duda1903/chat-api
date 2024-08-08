@@ -22,4 +22,10 @@ app.use("/", router.get("/salas", async(req, res)=>{
      res.status(200).send(resp);
 }));
 
+app.use("/entrar", router.post("/entrar", async(req, res, next) => {
+    const usuarioController = require("./controllers/usuarioController");
+    let resp = await usuarioController.entrar(req.body.nick);
+    res.status(200).send(resp);
+}));
+
 module.exports = app;
