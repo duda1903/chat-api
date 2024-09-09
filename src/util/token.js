@@ -9,7 +9,7 @@ const checkToken = async (token, id, key) => {
         if (decoded.id === id) {
             return { valid: true, decoded };
         } else {
-            return { valid: false, message: 'ID does not match' };
+            return { valid: false, message: 'ID nao sao compativeis' };
         }
     } catch (err) {
         // Se houver um erro na verificação do token
@@ -24,4 +24,4 @@ const setToken = async (id, key) =>{
     return false;
 };
 
-module.exports = {checktoken, setToken,};
+module.exports = {checkToken, setToken,};

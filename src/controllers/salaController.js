@@ -27,22 +27,41 @@ exports.sair = async (iduser, idsala) => {
     return false;
 }
 
-exports.enviarMensagem= async (nick, msg, idsala)=>{
-    const sala = await salaModel.buscarSala(idsala);
-    if(!sala.msgs){
-        sala.msgs=[];
-    }
-    timestamp=Date.now()
-    sala.msgs.push(
-        {
-            timestamp:timestamp,
-            msg:msg,
-            nick:nick
+/*const salaModel = require('../models/salaModel'); */
+const salaModel = require('../models/salaModel');
+
+exports.enviarMensagem = async (nick, msg, idSala) => {
+    console.log("idSala:", idSala);
+    try {
+        console.log("Buscando sala com id:", idSala); // Verifica o idSala que está sendo buscado
+        const sala = await salaModel.buscarSala(idSala);
+        
+        if (!sala) {
+            console.error("Sala não encontrada com o id:", idSala);
+            return { msg: "Sala não encontrada", error: true };
         }
-    )
-    let resp = await salaModel.atualizarMensagens(sala);
-    return {"msg":"OK", "timestamp":timestamp};
-}
+
+        if (!Array.isArray(sala.msgs)) {
+            sala.msgs = [];
+        }
+
+        const timestamp = Date.now();
+        sala.msgs.push({
+            nick: nick,
+            msg: msg,
+            timestamp: timestamp
+        });
+
+        let resp = await salaModel.atualizarMensagens(sala);
+        return { msg: "OK", timestamp: timestamp };
+    } catch (error) {
+        console.error("Erro ao enviar mensagem:", error);
+        return { msg: "Erro ao enviar mensagem", error: true };
+    }
+};
+
+
+
 
 exports.buscarMensagens = async (idsala, timestamp)=>{
     let mensagens=await salaModel.buscarMensagens(idsala, timestamp);
